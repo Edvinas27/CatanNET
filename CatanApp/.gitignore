@@ -1,0 +1,44 @@
+# Ignore build outputs
+bin/
+obj/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# IDE-specific files
+.vscode/
+.idea/
+*.code-workspace
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Entity Framework migrations
+Migrations/
+
+# Sensitive configuration files
+appsettings.json
+appsettings.*.json
+
+# Package directories
+node_modules/
+wwwroot/lib/
+
+# Generated files
+*.generated.cs
+
+# Rider IDE files
+.idea/
+*.iml
+
+# JetBrains Rider settings
+.idea/
+*.iml
