@@ -42,3 +42,4 @@ wwwroot/lib/
 # JetBrains Rider settings
 .idea/
 *.iml
+.DS_Store

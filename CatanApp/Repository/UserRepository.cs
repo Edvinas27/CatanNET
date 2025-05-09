@@ -5,27 +5,25 @@ using System.Threading.Tasks;
 using CatanApp.Data;
 using CatanApp.Interfaces;
 using CatanApp.Models.Accounts;
+using CatanApp.Models.ErrorHandling;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatanApp.Repository
 {
     public class UserRepository : IUserRepository
-    {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<AppUser> _userManager;
+    {        private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
 
-        public UserRepository(ApplicationDbContext context,UserManager<AppUser> userManager,SignInManager<AppUser> signInManager, ITokenService tokenService)
+        public UserRepository(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager, ITokenService tokenService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _context = context;
             _tokenService = tokenService;
         }
 
-        public async Task<AppUserDto?> CreateUser(RegisterDto registerDto)
+        public async Task<RegisterResponse> CreateUser(RegisterDto registerDto)
         {
             try
             {
@@ -41,51 +39,76 @@ namespace CatanApp.Repository
                     var roleResult = await _userManager.AddToRoleAsync(user, "User");
                     if(roleResult.Succeeded)
                     {
-                        return new AppUserDto
+                        return new RegisterResponse
                         {
-                            UserName = user.UserName!,
-                            Token = _tokenService.CreateToken(user)
+                            Success = true,
+                            User = new AppUserDto
+                            {
+                                UserName = user.UserName!,
+                                Token = _tokenService.CreateToken(user)
+                            }
                         };
                     }
                     else
                     {
-                        //failed to add to role
-                        return null;
+                        return new RegisterResponse
+                        {
+                            Success = false,
+                            ErrorMessage = "Failed to assign role to user."
+                        };
                     }
                 }
                 else
                 {
-                    //failed to create
-                    return null;
+                    return new RegisterResponse
+                    {
+                        Success = false,
+                        ErrorMessage = "Failed to create user."
+                    };
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error creating user: {ex.Message}");
-                return null;
+                return new RegisterResponse
+                {
+                    Success = false,
+                    ErrorMessage = ex.Message
+                };
             }
         }
 
-        public async Task<AppUserDto?> LoginUser(LoginDto loginDto)
+        public async Task<LoginResponse> LoginUser(LoginDto loginDto)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == loginDto.Username);
 
             if(user is null)
             {
-                return null;
+                return new LoginResponse
+                {
+                    Success = false,
+                    ErrorMessage = "Invalid username or password."
+                };
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password!, false);
 
             if(!result.Succeeded)
             {
-                return null;
+                return new LoginResponse
+                {
+                    Success = false,
+                    ErrorMessage = "Invalid username or password."
+                };
             }
 
-            return new AppUserDto
+            return new LoginResponse
             {
-                UserName = user.UserName!,
-                Token = _tokenService.CreateToken(user)
+                Success = true,
+                User = new AppUserDto
+                {
+                    UserName = user.UserName!,
+                    Token = _tokenService.CreateToken(user)
+                }
             };
         }
     }

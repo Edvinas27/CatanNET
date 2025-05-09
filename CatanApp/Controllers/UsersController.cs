@@ -26,41 +26,27 @@ namespace CatanApp.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
-            var user = await _userRepo.CreateUser(registerDto);
+            var response = await _userRepo.CreateUser(registerDto);
 
-            if(user is null)
+            if(!response.Success)
             {
-                return BadRequest("Failed to register user");
+                return BadRequest(response.ErrorMessage);
             }
 
-            return Ok(new AppUserDto
-            {
-                UserName = user.UserName,
-                Token = _tokenService.CreateToken(new AppUser
-                {
-                    UserName = user.UserName
-                })
-            });
+            return Ok(response.User);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var user = await _userRepo.LoginUser(loginDto);
+            var response = await _userRepo.LoginUser(loginDto);
 
-            if(user is null)
+            if(!response.Success)
             {
-                return BadRequest("Failed to login user");
+                return BadRequest(response.ErrorMessage);
             }
 
-            return Ok(new AppUserDto
-            {
-                UserName = user.UserName,
-                Token = _tokenService.CreateToken(new AppUser
-                {
-                    UserName = user.UserName
-                })
-            });
+            return Ok(response.User);
         }
     }
 }
