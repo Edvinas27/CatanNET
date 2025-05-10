@@ -41,7 +41,7 @@ var builder = WebApplication.CreateBuilder(args);
                         Id="Bearer"
                     }
                 },
-                new string[]{}
+                Array.Empty<string>()
             }
         });
     });
@@ -51,9 +51,9 @@ var builder = WebApplication.CreateBuilder(args);
     });
 
     builder.Services.AddIdentity<AppUser, IdentityRole>(options => {
-        options.Password.RequireDigit = true;
-        options.Password.RequireLowercase = true;
-        options.Password.RequireUppercase = true;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireUppercase = false;
         options.Password.RequireNonAlphanumeric = false;
         options.Password.RequiredLength = 7;
     }).AddEntityFrameworkStores<ApplicationDbContext>();

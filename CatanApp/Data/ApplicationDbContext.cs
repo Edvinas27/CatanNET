@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CatanApp.Models.Accounts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CatanApp.Data
 {
@@ -21,10 +16,10 @@ namespace CatanApp.Data
         {
             base.OnModelCreating(builder);
 
-            SeedRoles(builder);
+            SeedRoles();
 
 
-            void SeedRoles(ModelBuilder modelBuilder)
+            void SeedRoles()
             {
                 var roles = new List<IdentityRole>
                 {
