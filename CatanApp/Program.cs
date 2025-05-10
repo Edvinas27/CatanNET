@@ -1,3 +1,4 @@
+using System.Net;
 using CatanApp.Data;
 using CatanApp.Interfaces;
 using CatanApp.Models.Accounts;
@@ -69,6 +70,18 @@ var builder = WebApplication.CreateBuilder(args);
         };
     });
 
+    builder.Services.AddCors(options => {
+        options.AddPolicy("Default", builder => {
+            builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+    });
+
+    builder.WebHost.ConfigureKestrel(options => {
+        options.Listen(IPAddress.Any, 5154);
+    });
+
 
     builder.Services.AddScoped<ITokenService, TokenService>();
     builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -83,6 +96,7 @@ var app = builder.Build();
         app.UseSwaggerUI();
     }
 
+    app.UseCors("Default");
     app.UseHttpsRedirection();
     app.UseAuthorization();
     app.UseAuthentication();

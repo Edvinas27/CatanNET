@@ -11,5 +11,6 @@ namespace CatanApp.Interfaces
     {
         Task<RegisterResponse> CreateUser(RegisterDto registerDto);
         Task<LoginResponse> LoginUser(LoginDto loginDto);
+        Task<List<AppUserDto>> GetAllUsers();
     }
 }

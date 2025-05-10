@@ -48,5 +48,12 @@ namespace CatanApp.Controllers
 
             return Ok(response.User);
         }
+
+        [HttpGet("GetAllUsers")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userRepo.GetAllUsers();
+            return Ok(users);
+        }
     }
 }

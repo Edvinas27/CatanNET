@@ -111,5 +111,15 @@ namespace CatanApp.Repository
                 }
             };
         }
+        public async Task<List<AppUserDto>> GetAllUsers()
+        {
+            var users = await _userManager.Users.ToListAsync();
+
+            return users.Select(user => new AppUserDto
+            {
+                UserName = user.UserName!,
+                Token = null!
+            }).ToList();
+        }
     }
 }
